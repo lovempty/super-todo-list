@@ -1,0 +1,14 @@
+.input-task input {
+  border: none;
+  height: 1.5rem;
+  border-radius: 5px;
+  padding: 10px 15px;
+  width: 98%;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.input-task input:focus {
+  outline: none;
+}
+.input-task {
+  margin: 5rem 10rem;
+}

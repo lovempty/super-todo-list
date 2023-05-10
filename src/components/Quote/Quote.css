@@ -1,0 +1,14 @@
+.quote {
+  max-width: 750px;
+  color: white;
+}
+.quote .quote__heading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.quote .author {
+  text-align: right;
+  margin-right: 10px;
+}

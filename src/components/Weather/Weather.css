@@ -1,0 +1,40 @@
+.weather {
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  /* border: 2px solid rgb(88, 88, 252); */
+  background: linear-gradient(to bottom, #1b2a4e, #5e91cc);
+  color: white;
+  max-width: 250px;
+  /* font-size: 1.1rem; */
+  font-weight: 600;
+  opacity: 0.95;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.location {
+  text-align: center;
+}
+
+.spinner {
+  animation: spin 2s linear infinite;
+}
+
+.forecast {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.forecast .degree {
+  font-size: 1.4rem;
+}
+/* .forecast .icon img {
+  width: 100px;
+} */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
