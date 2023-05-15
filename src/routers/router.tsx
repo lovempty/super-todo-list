@@ -4,17 +4,25 @@ import {
   createBrowserRouter,
 } from "react-router-dom";
 import ErrorPage from "../errors/error-page";
+import AppLayout from '../layouts/AppLayout';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    errorElement: <ErrorPage />
+    element: <AppLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "",
+        element: <App />,
+      },
+      {
+        path: "/task-detail/:id",
+        element: <TaskDetail />,
+      },
+    ]
   },
-  {
-    path: "/task-detail/:id",
-    element: <TaskDetail />,
-  },
+
 
 ]);
 

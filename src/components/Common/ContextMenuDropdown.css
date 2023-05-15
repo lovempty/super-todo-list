@@ -1,0 +1,41 @@
+.context-menu {
+  position: fixed;
+  background-color: white;
+  padding: 5px;
+  z-index: 99;
+  animation: fade-in 0.2s ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  width: 20%;
+  border-radius: 5px;
+}
+.context-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.context-menu li {
+  padding: 5px;
+  cursor: pointer;
+}
+.context-menu li:hover {
+  background-color: #f0eded;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 96;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

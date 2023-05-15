@@ -1,0 +1,42 @@
+#root {
+  width: 100vw;
+}
+.app-layout {
+  padding: 2rem;
+  height: 100vh;
+  overflow: hidden;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.header .time {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.heading {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.tasks {
+  margin: 5rem 10rem;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  z-index: 999;
+  width: 97%;
+}

@@ -39,6 +39,9 @@ export default function Weather({ setBackground }: TypeProps) {
           setBackground('sunny');
         } else if (weather.includes('mist')) {
           setBackground('mist');
+        }
+        else if (weather.includes('clear')) {
+          setBackground('no-sun');
         } else {
           setBackground('background-app')
         }

@@ -16,31 +16,9 @@
   background-repeat: no-repeat;
 }
 
-.heading {
-  font-size: 2.2rem;
-  font-weight: bold;
-  color: white;
-}
-
-.tasks {
-  margin: 5rem 10rem;
-}
-
-.footer {
-  position: fixed;
-  bottom: 0;
-  z-index: 999;
-  width: 97%;
-}
-
-.header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-.header .time {
-  display: flex;
-  gap: 5px;
-  align-items: center;
-  margin: 5px 0;
+.date-created {
+  color: whitesmoke;
+  font-style: italic;
+  font-size: 13px;
+  margin-top: 15px;
 }

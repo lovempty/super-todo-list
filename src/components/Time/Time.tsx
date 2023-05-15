@@ -10,7 +10,6 @@ export default function Time() {
   }
 
   const initialDate = getDate()
-  console.log(initialDate)
   const [hour, setHour] = useState<number>(initialDate.hour)
   const [minute, setMinute] = useState<number>(initialDate.minute)
   useEffect(() => {
