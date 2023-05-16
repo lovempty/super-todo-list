@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { editTask, getTaskById } from '../../redux/task/tasksSlice';
 import './TaskDetail.css'
 import { useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import notify from '../../components/Common/Notify';
 
 export default function TaskDetail() {
   const { id } = useParams();
@@ -11,8 +11,8 @@ export default function TaskDetail() {
   const [taskDetail, setTaskDetail] = useState<string>('');
   const [dueDate, setDueDate] = useState<string>();
   const tasks = useAppSelector(state => state.tasks.tasks)
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const notify = () => toast.success("Updated task!", { autoClose: 2000 });
   useEffect(() => {
     if (id) {
       const task = getTaskById(tasks, +id)
@@ -33,7 +33,8 @@ export default function TaskDetail() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const result = id && dispatch(editTask({ id: +id, taskName: title, taskDetail: taskDetail, dueDate }))
-    notify()
+    notify({ type: 'success', message: 'Updated task successfully!' })
+    navigate('/')
   };
 
   return (
@@ -47,7 +48,6 @@ export default function TaskDetail() {
         <input type="date" value={dueDate} onChange={handleDueDateChange} className='input-form mb' placeholder='Due date' min={new Date().toLocaleDateString('en-CA')} />
         <button className='mt'>Submit</button>
       </form>
-      <ToastContainer theme='dark' />
     </div>
   )
 }

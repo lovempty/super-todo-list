@@ -35,6 +35,11 @@
   width: 20%;
   margin: auto;
 }
+
+.form-task button:hover {
+  opacity: 0.9;
+}
+
 .form-task button:focus {
   outline: none;
 }

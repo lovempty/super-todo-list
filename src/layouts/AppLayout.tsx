@@ -5,6 +5,8 @@ import Quote from "../components/Quote/Quote"
 import { Outlet } from "react-router-dom";
 import './AppLayout.css'
 import 'react-toastify/dist/ReactToastify.css';
+import AuthDetail from '../pages/Authentication/AuthDetail'
+import { ToastContainer } from 'react-toastify';
 
 export default function AppLayout() {
   const [todayTime, setTime] = useState("");
@@ -25,13 +27,14 @@ export default function AppLayout() {
             <div className="time">{todayTime} - <Time /></div>
             <Weather setBackground={setBackground} />
           </div>
-          <div>
-            <Quote />
+          <Quote />
+          <div className="right-content">
+            <AuthDetail />
           </div>
         </div>
         <Outlet />
       </div>
-
+      <ToastContainer position="top-center" theme="dark" />
     </>
   )
 }
