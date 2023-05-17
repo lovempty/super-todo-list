@@ -12,8 +12,9 @@ interface TasksState {
   tasks: TaskModel[];
 }
 const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
+
 const initialState: TasksState = {
-  tasks: !isLoggedIn ? JSON.parse(localStorage.getItem("listTasks") || "[]") : []
+  tasks: []
 }
 const updateLocalStorageTask = (tasks: TaskModel[]) => {
   localStorage.setItem("listTasks", JSON.stringify(tasks));
@@ -25,6 +26,9 @@ export const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
+    initData: (state) => {
+      state.tasks = JSON.parse(localStorage.getItem("listTasks") || "[]")
+    },
     fetchTask: (state, action: PayloadAction<TaskModel[]>) => {
       state.tasks = action.payload
     },
@@ -124,7 +128,7 @@ export const deleteTaskAsync = (id: string): AppThunk => async dispatch => {
   }
 }
 
-export const { addTask, changeStatusTask, deleteTask, editTask, fetchTask } = tasksSlice.actions
+export const { addTask, changeStatusTask, deleteTask, editTask, fetchTask, initData } = tasksSlice.actions
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,

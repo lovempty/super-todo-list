@@ -5,7 +5,7 @@ import InputTask from "../../components/InputTask/InputTask.tsx";
 import { TaskModel } from "../../types/Task.tsx";
 import Collapse from "../../components/Common/Collapse";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks.ts";
-import { changeStatusTask, deleteTask, deleteTaskAsync, editTask, fetchTasksAsync, updateTaskAsync } from "../../redux/task/tasksSlice.tsx";
+import { changeStatusTask, deleteTask, deleteTaskAsync, editTask, fetchTasksAsync, initData, updateTaskAsync } from "../../redux/task/tasksSlice.tsx";
 function App() {
   const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
   const tasks = useAppSelector(state => state.tasks.tasks)
@@ -19,6 +19,8 @@ function App() {
   useEffect(() => {
     if (isLoggedIn) {
       dispatch(fetchTasksAsync())
+    } else {
+      dispatch(initData())
     }
   }, [isLoggedIn])
   const onChangeStatus = (id: number) => (status: boolean) => {

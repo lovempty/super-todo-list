@@ -24,6 +24,16 @@ const AuthenticatedRoute: React.FC<AuthenticatedRouteProps> = ({ element }) => {
   }, [isLoggedIn])
   return <>{element}</>
 }
+const CheckLogin: React.FC<AuthenticatedRouteProps> = ({ element }) => {
+  const navigate = useNavigate();
+  const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/');
+    }
+  }, [isLoggedIn])
+  return <>{element}</>
+}
 
 
 
@@ -44,11 +54,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/login",
-        element: <Login />,
+        element: <CheckLogin element={<Login />} />,
       },
       {
         path: "/sign-up",
-        element: <SignUp />,
+        element: <CheckLogin element={<SignUp />} />,
       },
     ]
   },
