@@ -19,7 +19,6 @@ const AuthenticatedRoute: React.FC<AuthenticatedRouteProps> = ({ element }) => {
   const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
   useEffect(() => {
     if (!isLoggedIn) {
-      console.log('here');
       navigate('/login');
     }
   }, [isLoggedIn])
@@ -40,7 +39,8 @@ const router = createBrowserRouter([
       },
       {
         path: "/task-detail/:id",
-        element: <AuthenticatedRoute element={<TaskDetail />} />,
+        element: <TaskDetail />,
+        // element: <AuthenticatedRoute element={<TaskDetail />} />,
       },
       {
         path: "/login",

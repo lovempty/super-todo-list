@@ -20,7 +20,6 @@ export const Login = () => {
     event.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log(userCredential);
         notify({ type: 'success', message: 'Sign in successfully!' })
         navigate('/')
         localStorage.setItem('isLoggedIn', 'true')

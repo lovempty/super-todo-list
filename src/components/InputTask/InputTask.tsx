@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './InputTask.css'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { addTask } from '../../redux/task/tasksSlice';
+import { addTask, addTaskAsync } from '../../redux/task/tasksSlice';
 import { TaskModel } from '../../types/Task';
 type InputTaskProps = {
   taskName: string;
@@ -20,6 +20,7 @@ function generateUniqueId(array: { id: number }[]): number {
 }
 
 export default function InputTask({ taskName, autofocus, handleBlur, isEdit }: InputTaskProps): JSX.Element {
+  const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
   const tasks = useAppSelector(state => state.tasks.tasks)
   const dispatch = useAppDispatch()
   const [task, setTask] = useState<string>(taskName)
@@ -37,8 +38,14 @@ export default function InputTask({ taskName, autofocus, handleBlur, isEdit }: I
           month: "2-digit",
           year: "numeric",
         }),
+        user_id: localStorage.getItem('uid'),
+        dueDate: ''
       };
-      dispatch(addTask(newTask))
+      if (isLoggedIn) {
+        dispatch(addTaskAsync(newTask))
+      } else {
+        dispatch(addTask(newTask))
+      }
       { !isEdit && setTask('') }
       (event.target as HTMLInputElement).blur();
     }

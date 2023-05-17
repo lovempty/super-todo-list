@@ -1,25 +1,40 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { editTask, getTaskById } from '../../redux/task/tasksSlice';
+import { editTask, getTaskById, getTaskFireBaseById, updateTaskAsync } from '../../redux/task/tasksSlice';
 import './TaskDetail.css'
 import { useEffect, useState } from 'react';
 import notify from '../../components/Common/Notify';
+import { TaskModel } from '../../types/Task';
 
 export default function TaskDetail() {
+  const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
   const { id } = useParams();
   const [title, setTitle] = useState<string>('');
   const [taskDetail, setTaskDetail] = useState<string>('');
-  const [dueDate, setDueDate] = useState<string>();
+  const [dueDate, setDueDate] = useState<string>('');
+  const [completed, setCompleted] = useState<boolean>(false);
+  const [_id, set_id] = useState<string>('')
   const tasks = useAppSelector(state => state.tasks.tasks)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   useEffect(() => {
-    if (id) {
-      const task = getTaskById(tasks, +id)
-      setTitle(task?.content || '')
-      setTaskDetail(task?.taskDetail || '')
-      setDueDate(task?.dueDate)
-    }
+    (async () => {
+      if (id) {
+        let task: TaskModel | null | undefined;
+        if (isLoggedIn) {
+          task = await getTaskFireBaseById(+id)
+        } else {
+          task = getTaskById(tasks, +id)
+        }
+        console.log('task', task);
+
+        setTitle(task?.content || '')
+        setTaskDetail(task?.taskDetail || '')
+        setDueDate(task?.dueDate || '')
+        setCompleted(task?.completed || false)
+        set_id(task?._id || '')
+      }
+    })()
   }, [id])
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -32,9 +47,18 @@ export default function TaskDetail() {
   }
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const result = id && dispatch(editTask({ id: +id, taskName: title, taskDetail: taskDetail, dueDate }))
-    notify({ type: 'success', message: 'Updated task successfully!' })
-    navigate('/')
+    if (id) {
+      let task: TaskModel = { id: +id, content: title, taskDetail: taskDetail, dueDate, completed }
+      if (isLoggedIn) {
+        task = { ...task, _id }
+        dispatch(updateTaskAsync(task))
+        navigate('/')
+      } else {
+        dispatch(editTask(task))
+        notify({ type: 'success', message: 'Updated task successfully!' })
+        navigate('/')
+      }
+    }
   };
 
   return (
@@ -46,7 +70,7 @@ export default function TaskDetail() {
         <textarea value={taskDetail} onChange={handleTextareaChange} className='input-form' placeholder='Detail task' />
         <label htmlFor="" className='mt'>Due date</label>
         <input type="date" value={dueDate} onChange={handleDueDateChange} className='input-form mb' placeholder='Due date' min={new Date().toLocaleDateString('en-CA')} />
-        <button className='mt'>Submit</button>
+        <div className='button-groups' ><button onClick={() => navigate('/')}>Back</button><button className='button-submit'>Submit</button></div>
       </form>
     </div>
   )

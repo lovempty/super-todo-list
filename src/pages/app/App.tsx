@@ -1,13 +1,13 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import "./App.css";
 import Task from "../../components/Task/Task.tsx";
 import InputTask from "../../components/InputTask/InputTask.tsx";
 import { TaskModel } from "../../types/Task.tsx";
 import Collapse from "../../components/Common/Collapse";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks.ts";
-import { changeStatusTask, deleteTask, editTask } from "../../redux/task/tasksSlice.tsx";
-
+import { changeStatusTask, deleteTask, deleteTaskAsync, editTask, fetchTasksAsync } from "../../redux/task/tasksSlice.tsx";
 function App() {
+  const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
   const tasks = useAppSelector(state => state.tasks.tasks)
   const [currentChose, setCurrentChose] = useState<number>()
   const dispatch = useAppDispatch()
@@ -16,17 +16,30 @@ function App() {
     [tasks]
   );
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(fetchTasksAsync())
+      console.log('why not trigger this');
 
+    }
+  }, [isLoggedIn])
   const onChangeStatus = (id: number) => (status: boolean) => {
     dispatch(changeStatusTask({ id, status }))
   };
 
-  const onClickDelete = (id: number) => () => {
-    dispatch(deleteTask(id))
+  const onClickDelete = (id: number, _id: string) => () => {
+    if (isLoggedIn) {
+      console.log('_id', _id);
+
+      // dispatch(deleteTaskAsync(_id))
+    } else {
+      dispatch(deleteTask(id))
+    }
+
   }
 
   const onClickEdit = (id: number) => (taskName: string) => {
-    dispatch(editTask({ id, taskName }))
+    dispatch(editTask({ id, content: taskName }))
   }
 
   const TaskRender = (task: TaskModel, isMustDone: boolean = false) => (
@@ -36,7 +49,7 @@ function App() {
       taskContent={task.content}
       completed={task.completed}
       changeStatus={onChangeStatus(task.id)}
-      onClickDelete={onClickDelete(task.id)}
+      onClickDelete={onClickDelete(task.id, task._id || '')}
       onClickEdit={onClickEdit(task.id)}
       currentChose={(id: number) => setCurrentChose(id)}
       isSelected={currentChose === task.id}
@@ -64,9 +77,9 @@ function App() {
       return acc;
     }, {})
 
-  const renderListTasks = Object.keys(objectTaskByDate).map((key) => {
+  const renderListTasks = Object.keys(objectTaskByDate).map((key, index) => {
     return (
-      <div key={key}>
+      <div key={index}>
         <div className="date-created">{key}</div>
         {objectTaskByDate[key].map((task: TaskModel) => {
           return TaskRender(task)

@@ -29,11 +29,10 @@
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.form-task button {
+.form-task .button-submit {
   background-color: #445acd;
   color: white;
   width: 20%;
-  margin: auto;
 }
 
 .form-task button:hover {
@@ -58,4 +57,10 @@ textarea:focus {
 
 .mb {
   margin-bottom: 25px;
+}
+
+.button-groups {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }

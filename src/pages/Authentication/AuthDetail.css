@@ -16,3 +16,6 @@
   flex-direction: column;
   align-items: flex-end;
 }
+.auth-container:focus {
+  opacity: 0.9;
+}

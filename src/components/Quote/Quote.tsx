@@ -29,7 +29,7 @@ export default function Quote() {
         {!loading && `"${quote?.content ?? 'Some thing broke'}"`}
       </div>
       <div className="author">
-        - {quote?.author} -
+        {quote?.author && `-  ${quote?.author} -`}
       </div>
     </div>
   )

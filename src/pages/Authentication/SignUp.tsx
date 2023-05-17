@@ -20,7 +20,6 @@ export const SignUp = () => {
     event.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log(userCredential);
         notify({ type: 'success', message: 'Sign up successfully!' })
         navigate('/login')
       }).catch(error => {
