@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import './InputTask.css'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { addTask, addTaskAsync } from '../../redux/task/tasksSlice';
+import { addTask, addTaskAsync, updateTaskAsync } from '../../redux/task/tasksSlice';
 import { TaskModel } from '../../types/Task';
 type InputTaskProps = {
   taskName: string;
   autofocus: boolean;
   handleBlur?: (taskName: string) => void;
   isEdit?: boolean;
+  _id?: string;
 }
 
 function generateUniqueId(array: { id: number }[]): number {
@@ -19,7 +20,7 @@ function generateUniqueId(array: { id: number }[]): number {
   return newId; // return the unique ID
 }
 
-export default function InputTask({ taskName, autofocus, handleBlur, isEdit }: InputTaskProps): JSX.Element {
+export default function InputTask({ taskName, autofocus, handleBlur, isEdit, _id }: InputTaskProps): JSX.Element {
   const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
   const tasks = useAppSelector(state => state.tasks.tasks)
   const dispatch = useAppDispatch()
@@ -28,7 +29,7 @@ export default function InputTask({ taskName, autofocus, handleBlur, isEdit }: I
     setTask(event.target.value)
   }
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !isEdit) {
       const newTask: TaskModel = {
         id: generateUniqueId(tasks),
         content: task,

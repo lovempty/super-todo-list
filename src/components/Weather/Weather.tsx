@@ -22,7 +22,7 @@ export default function Weather({ setBackground }: TypeProps) {
         setLoading(false)
         setWeatherData(response.data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     fetchWeatherData();

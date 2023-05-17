@@ -7,6 +7,7 @@ import ContextMenu from '../Common/ContextMenuDropdown';
 
 type TypeProps = {
   id: number;
+  _id: string;
   taskContent: string;
   completed: boolean;
   changeStatus: (status: boolean) => void;
@@ -16,7 +17,7 @@ type TypeProps = {
   isSelected?: boolean;
   isMustDone?: boolean;
 }
-export default function Task({ taskContent, completed, changeStatus, onClickDelete, onClickEdit, id, currentChose, isSelected, isMustDone }: TypeProps) {
+export default function Task({ taskContent, completed, changeStatus, onClickDelete, onClickEdit, _id, id, currentChose, isSelected, isMustDone }: TypeProps) {
   const [menuPosition, setMenuPosition] = useState<{ x: number, y: number } | null>(null)
   const [isChecked, setIsChecked] = useState<boolean>(completed);
   const [isHovering, setHover] = useState<boolean>(false)
@@ -75,7 +76,7 @@ export default function Task({ taskContent, completed, changeStatus, onClickDele
     )
   } else {
     return <div className="task-edit">
-      <InputTask taskName={taskContent} autofocus={true} handleBlur={(task) => handleBlur(task)} isEdit={isEdit} />
+      <InputTask taskName={taskContent} autofocus={true} handleBlur={(task) => handleBlur(task)} isEdit={isEdit} _id={_id} />
     </div>
   }
 }

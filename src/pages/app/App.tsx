@@ -5,7 +5,7 @@ import InputTask from "../../components/InputTask/InputTask.tsx";
 import { TaskModel } from "../../types/Task.tsx";
 import Collapse from "../../components/Common/Collapse";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks.ts";
-import { changeStatusTask, deleteTask, deleteTaskAsync, editTask, fetchTasksAsync } from "../../redux/task/tasksSlice.tsx";
+import { changeStatusTask, deleteTask, deleteTaskAsync, editTask, fetchTasksAsync, updateTaskAsync } from "../../redux/task/tasksSlice.tsx";
 function App() {
   const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
   const tasks = useAppSelector(state => state.tasks.tasks)
@@ -19,8 +19,6 @@ function App() {
   useEffect(() => {
     if (isLoggedIn) {
       dispatch(fetchTasksAsync())
-      console.log('why not trigger this');
-
     }
   }, [isLoggedIn])
   const onChangeStatus = (id: number) => (status: boolean) => {
@@ -29,28 +27,32 @@ function App() {
 
   const onClickDelete = (id: number, _id: string) => () => {
     if (isLoggedIn) {
-      console.log('_id', _id);
-
-      // dispatch(deleteTaskAsync(_id))
+      dispatch(deleteTaskAsync(_id))
     } else {
       dispatch(deleteTask(id))
     }
 
   }
 
-  const onClickEdit = (id: number) => (taskName: string) => {
-    dispatch(editTask({ id, content: taskName }))
+  const onClickEdit = (id: number, _id: string) => (taskName: string) => {
+    if (isLoggedIn) {
+      dispatch(updateTaskAsync({ content: taskName } as TaskModel, _id))
+    } else {
+      dispatch(editTask({ id, content: taskName }))
+    }
+
   }
 
   const TaskRender = (task: TaskModel, isMustDone: boolean = false) => (
     <Task
+      _id={task._id || ''}
       id={task.id}
       key={task.id}
       taskContent={task.content}
       completed={task.completed}
       changeStatus={onChangeStatus(task.id)}
       onClickDelete={onClickDelete(task.id, task._id || '')}
-      onClickEdit={onClickEdit(task.id)}
+      onClickEdit={onClickEdit(task.id, task._id || '')}
       currentChose={(id: number) => setCurrentChose(id)}
       isSelected={currentChose === task.id}
       isMustDone={isMustDone}
@@ -65,15 +67,12 @@ function App() {
     }, task) => {
       // Extract the date from the task's created property
       const date = task.created_at + '';
-
       // If the date hasn't been seen before, create a new array for it
       if (!acc[date]) {
         acc[date] = [];
       }
-
       // Add the task to the array for this date
       acc[date].push(task);
-
       return acc;
     }, {})
 

@@ -26,8 +26,6 @@ export default function TaskDetail() {
         } else {
           task = getTaskById(tasks, +id)
         }
-        console.log('task', task);
-
         setTitle(task?.content || '')
         setTaskDetail(task?.taskDetail || '')
         setDueDate(task?.dueDate || '')
@@ -50,12 +48,10 @@ export default function TaskDetail() {
     if (id) {
       let task: TaskModel = { id: +id, content: title, taskDetail: taskDetail, dueDate, completed }
       if (isLoggedIn) {
-        task = { ...task, _id }
-        dispatch(updateTaskAsync(task))
+        dispatch(updateTaskAsync(task, _id))
         navigate('/')
       } else {
         dispatch(editTask(task))
-        notify({ type: 'success', message: 'Updated task successfully!' })
         navigate('/')
       }
     }

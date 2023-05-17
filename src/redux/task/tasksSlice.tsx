@@ -12,7 +12,6 @@ interface TasksState {
   tasks: TaskModel[];
 }
 const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
-console.log('run here')
 const initialState: TasksState = {
   tasks: !isLoggedIn ? JSON.parse(localStorage.getItem("listTasks") || "[]") : []
 }
@@ -52,6 +51,7 @@ export const tasksSlice = createSlice({
         targetTask.dueDate = action.payload.dueDate
       }
       updateLocalStorageTask(state.tasks)
+      notify({ type: 'success', message: 'Updated task successfully!' })
     },
   },
 })
@@ -83,7 +83,6 @@ export const fetchTasksAsync = (): AppThunk => async dispatch => {
       querySnapshot.forEach((doc) => {
         tasks.push({ ...doc.data(), _id: doc.id } as TaskModel)
       });
-      console.log('tasks', tasks);
       dispatch(fetchTask(tasks))
     } catch (error) {
       console.error(error)
@@ -94,20 +93,20 @@ export const fetchTasksAsync = (): AppThunk => async dispatch => {
 export const addTaskAsync = (task: TaskModel): AppThunk => async dispatch => {
   try {
     const docRef = await addDoc(collection(db, COLLECTION_NAME), task);
+    dispatch(fetchTasksAsync())
     dispatch(addTask(task))
-    console.log("Document written with ID: ", docRef.id);
+
   } catch (e) {
     console.error("Error adding document: ", e);
   }
 }
 
-export const updateTaskAsync = (task: TaskModel): AppThunk => async dispatch => {
+export const updateTaskAsync = (task: TaskModel, _id: string): AppThunk => async dispatch => {
   try {
-    const washingtonRef = doc(db, COLLECTION_NAME, task._id ?? '');
-
-    // Set the "capital" field of the city 'DC'
+    const washingtonRef = doc(db, COLLECTION_NAME, _id ?? '');
     await updateDoc(washingtonRef, task);
     notify({ type: 'success', message: 'Updated task successfully!' })
+    dispatch(fetchTasksAsync())
   } catch (e) {
     console.error("Error updating document: ", e);
     notify({ type: 'error', message: 'Updated task failed!' })
@@ -117,8 +116,11 @@ export const updateTaskAsync = (task: TaskModel): AppThunk => async dispatch => 
 export const deleteTaskAsync = (id: string): AppThunk => async dispatch => {
   try {
     await deleteDoc(doc(db, COLLECTION_NAME, id));
+    dispatch(fetchTasksAsync())
+    notify({ type: 'success', message: 'Deleted task successfully!' })
   } catch (error) {
     console.error(error)
+    notify({ type: 'error', message: 'Deleted task failed!' })
   }
 }
 
