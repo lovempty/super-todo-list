@@ -1,4 +1,4 @@
-import { AnyAction, PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { AnyAction, PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { TaskModel } from '../../types/Task'
 import { RootState } from '../store';
 import { ThunkAction } from 'redux-thunk'
@@ -99,7 +99,6 @@ export const addTaskAsync = (task: TaskModel): AppThunk => async dispatch => {
     const docRef = await addDoc(collection(db, COLLECTION_NAME), task);
     dispatch(fetchTasksAsync())
     dispatch(addTask(task))
-
   } catch (e) {
     console.error("Error adding document: ", e);
   }

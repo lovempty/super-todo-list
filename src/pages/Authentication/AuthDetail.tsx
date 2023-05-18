@@ -5,10 +5,14 @@ import './AuthDetail.css'
 import { useNavigate } from 'react-router-dom';
 import notify from "../../components/Common/Notify";
 import { useMatch } from 'react-router-dom';
+import { useAppDispatch } from "../../redux/hooks";
+import { fetchTasksAsync, initData } from "../../redux/task/tasksSlice";
 
 const AuthDetail = () => {
   const [authUser, setAuthUser] = useState<any>(null)
   const [visible, setVisible] = useState<boolean>(false)
+  const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false')
+  const dispatch = useAppDispatch()
   // const [inSignIn, setInSignIn] = useState<boolean>(false)
   let inSignIn: boolean = false;
   const match = useMatch('/:path');
@@ -20,24 +24,27 @@ const AuthDetail = () => {
   }
 
   const navigate = useNavigate()
-  // useEffect(() => {
-  //   if (match) {
-  //     const { params: { path } } = match;
-  //     path === 'login' && setInSignIn(true)
-  //   }
-  // }, [match])
+
   useEffect(() => {
-    const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false')
+
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user && isLoggedIn) {
+        console.log('change user id', user.uid);
+
         localStorage.setItem('uid', user.uid)
         setAuthUser(user)
+        setVisible(false)
+        dispatch(fetchTasksAsync())
       } else {
+        console.log('run hể');
+
         setAuthUser(null)
+        dispatch(initData())
+        localStorage.removeItem('uid')
       }
     })
     return unsubscribe
-  }, [])
+  }, [match, authUser])
 
   const handleLogout = () => {
     if (visible) {
@@ -45,6 +52,7 @@ const AuthDetail = () => {
         notify({ type: 'success', message: 'Sign out successfully!' })
         navigate('/login')
         localStorage.setItem('isLoggedIn', 'false')
+
       }).catch(error => {
         notify({ type: 'error', message: 'Sign out failed!' })
         console.error(error)
@@ -61,7 +69,7 @@ const AuthDetail = () => {
   }
   const divLogout = <div style={{ color: 'red' }}>Logout</div>
   const NameDisplay = () => (
-    <div className="name-display" onClick={handleClick}>
+    <div className="name-display" >
       {
         (authUser ? (visible ? divLogout : authUser.email) : 'Sign in')
       }
@@ -70,11 +78,12 @@ const AuthDetail = () => {
 
   return (
     <>
-      {!inSignIn && <div className="auth-container">
+      {!inSignIn && <div className="auth-container" onClick={handleClick}>
         <div onMouseOver={() => setVisible(true)} onMouseLeave={() => setVisible(false)} className="auth-detail">
           <NameDisplay />
         </div>
       </div>}
+      {!isLoggedIn && <div style={{ fontSize: '16px' }}>*You are using this app as a <span style={{ color: '#f5f5f5', fontWeight: '600' }}>Guest</span> </div>}
     </>
   )
 }

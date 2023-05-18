@@ -16,15 +16,14 @@ function App() {
     [tasks]
   );
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(fetchTasksAsync())
+
+  const onChangeStatus = (id: number, _id: string) => (status: boolean) => {
+    if (!isLoggedIn) {
+      dispatch(changeStatusTask({ id, status }))
     } else {
-      dispatch(initData())
+      dispatch(updateTaskAsync({ completed: status } as TaskModel, _id))
     }
-  }, [isLoggedIn])
-  const onChangeStatus = (id: number) => (status: boolean) => {
-    dispatch(changeStatusTask({ id, status }))
+
   };
 
   const onClickDelete = (id: number, _id: string) => () => {
@@ -52,7 +51,7 @@ function App() {
       key={task.id}
       taskContent={task.content}
       completed={task.completed}
-      changeStatus={onChangeStatus(task.id)}
+      changeStatus={onChangeStatus(task.id, task._id || '')}
       onClickDelete={onClickDelete(task.id, task._id || '')}
       onClickEdit={onClickEdit(task.id, task._id || '')}
       currentChose={(id: number) => setCurrentChose(id)}
@@ -77,8 +76,17 @@ function App() {
       acc[date].push(task);
       return acc;
     }, {})
+  const sortedObjectTaskByDate = Object.keys(objectTaskByDate).sort((a, b) => {
+    const [dayA, monthA, yearA] = a.split('/');
+    const [dayB, monthB, yearB] = b.split('/');
+    return new Date(`${yearB}-${monthB}-${dayB}`).getTime() - new Date(`${yearA}-${monthA}-${dayA}`).getTime()
+  });
+  const sortedTasksByDate: { [key: string]: TaskModel[] } = {};
+  sortedObjectTaskByDate.forEach(date => {
+    sortedTasksByDate[date] = objectTaskByDate[date];
+  });
 
-  const renderListTasks = Object.keys(objectTaskByDate).map((key, index) => {
+  const renderListTasks = Object.keys(sortedTasksByDate).map((key, index) => {
     return (
       <div key={index}>
         <div className="date-created">{key}</div>
