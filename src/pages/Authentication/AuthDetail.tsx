@@ -29,15 +29,11 @@ const AuthDetail = () => {
 
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user && isLoggedIn) {
-        console.log('change user id', user.uid);
-
         localStorage.setItem('uid', user.uid)
         setAuthUser(user)
         setVisible(false)
         dispatch(fetchTasksAsync())
       } else {
-        console.log('run hể');
-
         setAuthUser(null)
         dispatch(initData())
         localStorage.removeItem('uid')
@@ -83,7 +79,7 @@ const AuthDetail = () => {
           <NameDisplay />
         </div>
       </div>}
-      {!isLoggedIn && <div style={{ fontSize: '16px' }}>*You are using this app as a <span style={{ color: '#f5f5f5', fontWeight: '600' }}>Guest</span> </div>}
+      {!isLoggedIn && <div style={{ fontSize: '16px', color: 'white' }}>*You are using this app as a <span style={{ color: 'rgb(24 255 7)', fontWeight: '600' }}>Guest</span> </div>}
     </>
   )
 }

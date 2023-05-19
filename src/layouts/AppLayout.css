@@ -46,3 +46,7 @@
   flex-direction: column;
   min-width: 240px;
 }
+
+.logo {
+  cursor: pointer;
+}

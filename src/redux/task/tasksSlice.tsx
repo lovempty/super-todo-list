@@ -33,8 +33,12 @@ export const tasksSlice = createSlice({
       state.tasks = action.payload
     },
     addTask: (state, action: PayloadAction<TaskModel>) => {
+      let isLogin = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
       state.tasks.push(action.payload)
-      !isLoggedIn && updateLocalStorageTask(state.tasks)
+      if (!isLogin) {
+        updateLocalStorageTask(state.tasks)
+      }
+
     },
     changeStatusTask: (state, action: PayloadAction<{ id: number; status: boolean; }>) => {
       const targetTask = state.tasks.find((task) => task.id === action.payload.id);

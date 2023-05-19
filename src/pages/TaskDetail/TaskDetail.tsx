@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { editTask, getTaskById, getTaskFireBaseById, updateTaskAsync } from '../../redux/task/tasksSlice';
 import './TaskDetail.css'
 import { useEffect, useState } from 'react';
-import notify from '../../components/Common/Notify';
 import { TaskModel } from '../../types/Task';
 
 export default function TaskDetail() {
@@ -17,23 +16,27 @@ export default function TaskDetail() {
   const tasks = useAppSelector(state => state.tasks.tasks)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const [task, setTask] = useState<TaskModel | null | undefined>()
+
   useEffect(() => {
     (async () => {
       if (id) {
-        let task: TaskModel | null | undefined;
         if (isLoggedIn) {
-          task = await getTaskFireBaseById(+id)
+          setTask(await getTaskFireBaseById(+id))
         } else {
-          task = getTaskById(tasks, +id)
+          setTask(getTaskById(tasks, +id))
         }
-        setTitle(task?.content || '')
-        setTaskDetail(task?.taskDetail || '')
-        setDueDate(task?.dueDate || '')
-        setCompleted(task?.completed || false)
-        set_id(task?._id || '')
       }
     })()
-  }, [id])
+  }, [id, tasks])
+  useEffect(() => {
+    setTitle(task?.content || '')
+    setTaskDetail(task?.taskDetail || '')
+    setDueDate(task?.dueDate || '')
+    setCompleted(task?.completed || false)
+    set_id(task?._id || '')
+
+  }, [task])
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
@@ -65,7 +68,7 @@ export default function TaskDetail() {
         <label htmlFor="" className='mt'>Task Detail</label>
         <textarea value={taskDetail} onChange={handleTextareaChange} className='input-form' placeholder='Detail task' />
         <label htmlFor="" className='mt'>Due date</label>
-        <input type="date" value={dueDate} onChange={handleDueDateChange} className='input-form mb' placeholder='Due date' min={new Date().toLocaleDateString('en-CA')} />
+        <input type="date" value={dueDate} onChange={handleDueDateChange} className='input-form mb' placeholder='Due date' min={new Date().toLocaleDateString('en-CA')} disabled={task?.completed} />
         <div className='button-groups' ><button onClick={() => navigate('/')}>Back</button><button className='button-submit'>Submit</button></div>
       </form>
     </div>
