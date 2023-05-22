@@ -6,6 +6,8 @@ import { Login } from '../pages/Authentication/Login';
 import { SignUp } from '../pages/Authentication/SignUp';
 import { createBrowserRouter, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import MyDay from '../pages/MyDay/MyDay';
+import Important from '../pages/Important/Important';
 
 
 // Custom Route component
@@ -35,8 +37,6 @@ const CheckLogin: React.FC<AuthenticatedRouteProps> = ({ element }) => {
   return <>{element}</>
 }
 
-
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -46,6 +46,14 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <App />,
+      },
+      {
+        path: "/my-day",
+        element: <MyDay />,
+      },
+      {
+        path: "/important",
+        element: <Important />,
       },
       {
         path: "/task-detail/:id",

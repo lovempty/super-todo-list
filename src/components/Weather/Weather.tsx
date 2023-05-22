@@ -34,7 +34,7 @@ export default function Weather({ setBackground }: TypeProps) {
         if (weather.includes('rain')) {
           setBackground('rainy');
         } else if (weather.includes('cloud')) {
-          setBackground('cloudy');
+          setBackground('no-sun');
         } else if (weather.includes('sun')) {
           setBackground('sunny');
         } else if (weather.includes('mist')) {
@@ -64,7 +64,7 @@ export default function Weather({ setBackground }: TypeProps) {
         !loading && weatherData &&
         <div className="weather__content">
           <div className="location">
-            Hà Nội
+            Hanoi
           </div>
           <div className='forecast'>
             <div className='degree'>

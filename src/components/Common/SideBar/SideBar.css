@@ -1,0 +1,73 @@
+.SideBar {
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  width: 250px;
+  max-width: 250px;
+  min-width: 250px;
+  height: 600px;
+  z-index: 999;
+}
+
+.search {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: #248ace;
+}
+.icon-list {
+  color: #248ace;
+}
+.icon-sun {
+  color: rgb(167, 167, 55);
+}
+.icon-star {
+  color: rgb(245, 68, 68);
+}
+.search input {
+  border: none;
+  height: 1.5rem;
+  border-radius: 5px;
+  padding: 10px 15px;
+  width: calc(100% - 30px);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.search input:focus {
+  outline: none;
+}
+
+.SideBar ul {
+  list-style-type: none;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  padding: 5px 10px;
+  font-weight: 600;
+}
+.active-menu {
+  background-color: rgb(228, 227, 227);
+  border-radius: 5px;
+  transform: scale(1.03);
+}
+
+.menu-item:hover {
+  background-color: rgb(228, 227, 227);
+  border-radius: 5px;
+  transform: scale(1.03);
+}

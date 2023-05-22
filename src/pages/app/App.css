@@ -20,5 +20,8 @@
   color: whitesmoke;
   font-style: italic;
   font-size: 13px;
-  margin-top: 15px;
+}
+
+.tasks {
+  width: 100%;
 }

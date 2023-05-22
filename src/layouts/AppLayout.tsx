@@ -1,41 +1,34 @@
-import { useState, useEffect } from "react"
-import Time from "../components/Time/Time"
-import Weather from "../components/Weather/Weather"
-import Quote from "../components/Quote/Quote"
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import './AppLayout.css'
 import 'react-toastify/dist/ReactToastify.css';
-import AuthDetail from '../pages/Authentication/AuthDetail'
+import { useState } from 'react'
 import { ToastContainer } from 'react-toastify';
+import Header from "../components/Common/Header/Header";
+import SideBar from "../components/Common/SideBar/SideBar";
+import InputTask from "../components/InputTask/InputTask";
+import { useLocation } from 'react-router-dom';
 
 export default function AppLayout() {
-  const navigate = useNavigate();
-  const [todayTime, setTime] = useState("");
+  const location = useLocation();
+  const pathsNoSidebar = ['/login', 'sign-up']
+
+  const isAllowToDisplay = !pathsNoSidebar.includes(location.pathname)
+
   const [backgroundImg, setBackgroundImg] = useState<string>('')
   const setBackground = (img: string) => {
     setBackgroundImg(img)
   }
-  useEffect(() => {
-    const today = new Date();
-    setTime(today.toDateString());
-  }, []);
   return (
-    <>
-      <div className="app-layout" style={{ backgroundImage: `url(../public/assets/${backgroundImg}.jpg)` }}>
-        <div className="header">
-          <div>
-            <div className="heading logo" onClick={() => navigate('/')}>Today is a great day to work</div>
-            <div className="time">{todayTime} - <Time /></div>
-            <Weather setBackground={setBackground} />
-          </div>
-          <Quote />
-          <div className="right-content">
-            <AuthDetail />
-          </div>
-        </div>
+    <div className="app-layout" style={{ backgroundImage: `url(../public/assets/no-sun.jpg)` }}>
+      <Header setBackground={setBackground} />
+      <div className={isAllowToDisplay ? 'sidebar-layout' : ''}>
+        {isAllowToDisplay && <SideBar />}
         <Outlet />
       </div>
+      {isAllowToDisplay && <div className="footer">
+        <InputTask taskName="" autofocus={false} />
+      </div>}
       <ToastContainer position="top-center" theme="dark" />
-    </>
+    </div>
   )
 }

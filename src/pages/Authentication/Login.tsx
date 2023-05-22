@@ -4,21 +4,27 @@ import { signInWithEmailAndPassword } from '@firebase/auth'
 import './Login.css'
 import notify from "../../components/Common/Notify";
 import { useNavigate } from 'react-router-dom';
+import { object, string, ObjectSchema } from 'yup';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+
+interface FormValues {
+  username: string;
+  password: string;
+}
 
 export const Login = () => {
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
   const navigate = useNavigate()
+  const validationSchema: ObjectSchema<FormValues> = object({
+    username: string().required('Email is required'),
+    password: string().required('Password is required')
+  });
+  const initialValues: FormValues = {
+    username: '',
+    password: '',
+  };
+  const signIn = (values: FormValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
 
-  const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value)
-  }
-  const onChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value)
-  }
-  const signIn = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(auth, values.username, values.password)
       .then((userCredential) => {
         notify({ type: 'success', message: 'Sign in successfully!' })
         navigate('/')
@@ -27,17 +33,34 @@ export const Login = () => {
         notify({ type: 'error', message: 'Sign in failed!' })
         console.error(error)
       })
+    setSubmitting(false)
   }
   return (
     <div className="login-container">
       <div className="login">
-        <form action="" onSubmit={signIn} className='form-login'>
-          <h2 className='title'>Sign in</h2>
-          <input type="email" value={email} placeholder="Enter your email" onChange={onChangeEmail} />
-          <input type="password" value={password} placeholder="Enter your password" onChange={onChangePassword} className='mt mb' />
-          <button type='submit' >Log In</button>
-          <div className='register-container'>Don't have an account? <span className='register' onClick={() => navigate('/sign-up')}>Register one</span> </div>
-        </form>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={signIn}
+        >
+          <Form className='form-login'>
+            <h2 className='title'>Sign in</h2>
+            <div className='form-input'>
+              <Field type="email" placeholder="Enter your email" name="username" />
+              <ErrorMessage name="username" component="div" className='error-message' />
+            </div>
+            <div className='form-input'>
+              <Field type="password" placeholder="Enter your password" name="password" className='mt' />
+              <ErrorMessage name="password" component="div" className='error-message' />
+            </div>
+            <div className='submit-btn mt'>
+              <button type='submit' >Submit</button>
+            </div>
+
+            <div className='register-container'>Don't have an account? <span className='register' onClick={() => navigate('/sign-up')}>Register one</span> </div>
+          </Form>
+        </Formik>
+
       </div>
     </div>
   )

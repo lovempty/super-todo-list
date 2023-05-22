@@ -30,15 +30,17 @@
   color: white;
 }
 
-.tasks {
+.sidebar-layout {
   margin: 5rem 10rem;
+  gap: 30px;
 }
 
 .footer {
   position: fixed;
   bottom: 0;
+  right: 37px;
   z-index: 999;
-  width: 97%;
+  width: calc(100% - 389px);
 }
 
 .right-content {
@@ -49,4 +51,14 @@
 
 .logo {
   cursor: pointer;
+}
+
+.error-message {
+  color: rgb(236, 53, 53);
+  font-size: 13px;
+  position: absolute;
+}
+
+.sidebar-layout {
+  display: flex;
 }

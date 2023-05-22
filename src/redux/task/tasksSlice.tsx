@@ -11,7 +11,6 @@ const COLLECTION_NAME = 'tasks'
 interface TasksState {
   tasks: TaskModel[];
 }
-const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
 
 const initialState: TasksState = {
   tasks: []
@@ -47,6 +46,21 @@ export const tasksSlice = createSlice({
       }
       updateLocalStorageTask(state.tasks)
     },
+    addToMyDay: (state, action: PayloadAction<{ id: number; isMyDay: boolean; }>) => {
+      const targetTask = state.tasks.find((task) => task.id === action.payload.id);
+      if (targetTask) {
+        targetTask.isMyDay = action.payload.isMyDay;
+      }
+      updateLocalStorageTask(state.tasks)
+    },
+    addToImportant: (state, action: PayloadAction<{ id: number; isImportant: boolean; }>) => {
+      const targetTask = state.tasks.find((task) => task.id === action.payload.id);
+      if (targetTask) {
+        targetTask.isImportant = action.payload.isImportant;
+      }
+      updateLocalStorageTask(state.tasks)
+    },
+
     deleteTask: (state, action: PayloadAction<number>) => {
       state.tasks = state.tasks.filter((task: TaskModel) => task.id !== action.payload)
       updateLocalStorageTask(state.tasks)
@@ -70,8 +84,23 @@ export const getTaskById = (tasks: TaskModel[], taskId: number) => {
   // Return the task if it exists, or null if it doesn't
   return task ? task : null;
 };
+export const getMyDayTasks = (tasks: TaskModel[]) => {
+  const task = tasks.filter((task: TaskModel) => task.isMyDay);
+  return task ? task : null;
+};
+export const getTasksFirebase = async (type: 'isMyDay' | 'isImportant') => {
+  let userId = localStorage.getItem('uid')
+  try {
+    const q = query(collection(db, COLLECTION_NAME), where(type, "==", true), where("user_id", "==", userId))
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs && querySnapshot.docs.map(doc => doc.data() as TaskModel)
+  } catch (error) {
+    console.error(error)
+  }
+};
 
 export const getTaskFireBaseById = async (id: number) => {
+
   try {
     const q = query(collection(db, COLLECTION_NAME), where("id", "==", id))
     const querySnapshot = await getDocs(q);
@@ -114,6 +143,7 @@ export const updateTaskAsync = (task: TaskModel, _id: string): AppThunk => async
     await updateDoc(washingtonRef, task);
     notify({ type: 'success', message: 'Updated task successfully!' })
     dispatch(fetchTasksAsync())
+    console.log('run');
   } catch (e) {
     console.error("Error updating document: ", e);
     notify({ type: 'error', message: 'Updated task failed!' })
@@ -131,7 +161,7 @@ export const deleteTaskAsync = (id: string): AppThunk => async dispatch => {
   }
 }
 
-export const { addTask, changeStatusTask, deleteTask, editTask, fetchTask, initData } = tasksSlice.actions
+export const { addTask, changeStatusTask, deleteTask, editTask, fetchTask, initData, addToMyDay, addToImportant } = tasksSlice.actions
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,

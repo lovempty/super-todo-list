@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { FaTrashAlt } from "react-icons/fa";
 import InputTask from '../InputTask/InputTask';
 import ContextMenu from '../Common/ContextMenuDropdown';
+import { useAppDispatch } from '../../redux/hooks';
+import { changeStatusTask, deleteTask, deleteTaskAsync, editTask, updateTaskAsync, addToMyDay, addToImportant } from '../../redux/task/tasksSlice';
+import { TaskModel } from '../../types/Task';
 
 
 type TypeProps = {
@@ -10,33 +13,57 @@ type TypeProps = {
   _id: string;
   taskContent: string;
   completed: boolean;
-  changeStatus: (status: boolean) => void;
-  onClickDelete: () => void;
-  onClickEdit: (taskName: string) => void;
   currentChose: (id: number) => void;
+  isMyDay: boolean;
+  isImportant: boolean;
   isSelected?: boolean;
   isMustDone?: boolean;
 }
-export default function Task({ taskContent, completed, changeStatus, onClickDelete, onClickEdit, _id, id, currentChose, isSelected, isMustDone }: TypeProps) {
+export default function Task({ taskContent, completed, _id, id, currentChose, isSelected, isMustDone, isMyDay, isImportant }: TypeProps) {
   const [menuPosition, setMenuPosition] = useState<{ x: number, y: number } | null>(null)
   const [isChecked, setIsChecked] = useState<boolean>(completed);
   const [isHovering, setHover] = useState<boolean>(false)
   const [isEdit, setEdit] = useState<boolean>(false)
+  const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
+  const dispatch = useAppDispatch()
 
+  const onChangeStatus = (id: number, _id: string, status: boolean) => {
+    if (!isLoggedIn) {
+      dispatch(changeStatusTask({ id, status }))
+    } else {
+      dispatch(updateTaskAsync({ completed: status } as TaskModel, _id))
+    }
+  };
+  const onClickDelete = (id: number, _id: string) => {
+    if (isLoggedIn) {
+      dispatch(deleteTaskAsync(_id))
+    } else {
+      dispatch(deleteTask(id))
+    }
+  }
+  const onClickEdit = (id: number, _id: string, taskName: string) => {
+    if (isLoggedIn) {
+      dispatch(updateTaskAsync({ content: taskName } as TaskModel, _id))
+    } else {
+      dispatch(editTask({ id, content: taskName }))
+    }
+  }
   const handleChangeStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newStatus = event.target.checked;
-    changeStatus(newStatus)
+    onChangeStatus(id, _id, newStatus)
     setIsChecked(newStatus)
   }
   const handleDeleteTask = () => {
-    onClickDelete()
+    console.log('log');
+
+    onClickDelete(id, _id)
   }
   const handleEditTask = () => {
     setEdit(true)
   }
   const handleBlur = (taskName: string) => {
     setEdit(false)
-    onClickEdit(taskName)
+    onClickEdit(id, _id, taskName)
   }
   const handleRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
     currentChose(id)
@@ -45,13 +72,28 @@ export default function Task({ taskContent, completed, changeStatus, onClickDele
 
   }
   const handleCloseContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
-
     if (event.button !== 2) {
       currentChose(0)
       setMenuPosition(null)
     }
   }
   const backgroundColor = isMustDone ? '#e5baba' : 'whitesmoke'
+  const addMyDay = (status: boolean) => {
+    let task = { id: +id, isMyDay: status }
+    if (isLoggedIn) {
+      dispatch(updateTaskAsync(task as TaskModel, _id))
+    } else {
+      dispatch(addToMyDay(task))
+    }
+  }
+  const addImportant = (status: boolean) => {
+    let task = { id: +id, isImportant: status }
+    if (isLoggedIn) {
+      dispatch(updateTaskAsync(task as TaskModel, _id))
+    } else {
+      dispatch(addToImportant(task))
+    }
+  }
   if (!isEdit) {
     return (
       <div className='task-container'>
@@ -65,7 +107,7 @@ export default function Task({ taskContent, completed, changeStatus, onClickDele
           onClick={handleCloseContextMenu}
           style={{ backgroundColor }}
         >
-          {menuPosition && isSelected && <ContextMenu x={menuPosition.x} y={menuPosition.y} id={id} />}
+          {menuPosition && isSelected && <ContextMenu x={menuPosition.x} y={menuPosition.y} id={id} addToMyDay={addMyDay} addToImportant={addImportant} isMyDay={isMyDay} isImportant={isImportant} />}
           <input type="checkbox" onChange={handleChangeStatus} checked={isChecked} />
           <div>{taskContent}</div>
           {isHovering && <div className="actions">

@@ -26,8 +26,11 @@
   border-radius: 5px;
   padding: 10px 15px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  width: calc(100% - 30px);
 }
-
+.form-input {
+  position: relative;
+}
 .form-login input:focus {
   outline: none;
 }
@@ -64,4 +67,8 @@
 .register-container {
   text-align: center;
   margin-top: 10px;
+}
+
+.submit-btn {
+  text-align: center;
 }
