@@ -21,7 +21,9 @@
 .context-menu li:hover {
   background-color: #f0eded;
 }
-
+.selected {
+  background-color: #f0eded;
+}
 .overlay {
   position: fixed;
   top: 0;

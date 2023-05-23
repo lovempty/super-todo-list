@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   margin-top: 50px;
+  width: 100%;
 }
 .TaskDetail label {
   color: white;
@@ -13,20 +14,43 @@
   width: 40%;
 }
 
-.form-task input {
+.form-task input[type="text"],
+input[type="date"] {
   border: none;
   height: 1.5rem;
   border-radius: 5px;
   padding: 10px 15px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  width: calc(100% - 30px);
 }
 
+.form-task input[type="file"] {
+}
+
+.file-selected .file {
+  border-radius: 5px;
+  padding: 10px 15px;
+  background-color: #ffffff;
+  width: 30%;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.file-selected .file:hover {
+  opacity: 0.9;
+}
+.icon-file {
+  color: rgb(226, 212, 84);
+}
 .form-task textarea {
   border: none;
   height: 20rem;
   border-radius: 5px;
   padding: 10px 15px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  width: calc(100% - 30px);
 }
 
 .form-task .button-submit {

@@ -4,6 +4,7 @@ export type TaskModel = {
   content: string;
   completed: boolean;
   taskDetail?: string;
+  fileAttach?: string;
   isMyDay?: boolean;
   isImportant?: boolean;
   dueDate?: string;

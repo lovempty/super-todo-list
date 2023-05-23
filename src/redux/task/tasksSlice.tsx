@@ -5,6 +5,10 @@ import { ThunkAction } from 'redux-thunk'
 import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import db from "../../firebase"
 import notify from '../../components/Common/Notify';
+import { ref, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
+
+// Create a root reference
+const storage = getStorage();
 
 const COLLECTION_NAME = 'tasks'
 // Define the initial state
@@ -98,6 +102,18 @@ export const getTasksFirebase = async (type: 'isMyDay' | 'isImportant') => {
     console.error(error)
   }
 };
+export const getTasksFirebaseByTitle = async (title: string) => {
+  let userId = localStorage.getItem('uid')
+  try {
+    const q = query(collection(db, COLLECTION_NAME), where("content", ">=", title)
+      , where('content', '<=', title + '\uf8ff'),
+      where("user_id", "==", userId))
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs && querySnapshot.docs.map(doc => doc.data() as TaskModel)
+  } catch (error) {
+    console.error(error)
+  }
+};
 
 export const getTaskFireBaseById = async (id: number) => {
 
@@ -137,13 +153,22 @@ export const addTaskAsync = (task: TaskModel): AppThunk => async dispatch => {
   }
 }
 
-export const updateTaskAsync = (task: TaskModel, _id: string): AppThunk => async dispatch => {
+export const updateTaskAsync = (task: TaskModel, _id: string, fileAttach?: File): AppThunk => async dispatch => {
   try {
+    let fileURL = '';
+    if (fileAttach) {
+      const storageRef = ref(storage, fileAttach.name);
+      await uploadBytes(storageRef, fileAttach);
+      fileURL = await getDownloadURL(storageRef);
+    }
     const washingtonRef = doc(db, COLLECTION_NAME, _id ?? '');
-    await updateDoc(washingtonRef, task);
+    if (fileURL) {
+      await updateDoc(washingtonRef, { ...task, fileAttach: fileURL });
+    } else {
+      await updateDoc(washingtonRef, task);
+    }
     notify({ type: 'success', message: 'Updated task successfully!' })
     dispatch(fetchTasksAsync())
-    console.log('run');
   } catch (e) {
     console.error("Error updating document: ", e);
     notify({ type: 'error', message: 'Updated task failed!' })

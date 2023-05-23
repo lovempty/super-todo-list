@@ -23,8 +23,8 @@ export default function ContextMenu({ x, y, id, addToMyDay, addToImportant, isMy
     <div className="context-menu" style={{ left: x, top: y }}>
       <ul>
         <li onClick={() => navigate(`/task-detail/${id}`)}>Task Detail</li>
-        <li onClick={handleAddToMyDay}>Add to My Day {isMyDay && <FaCheck />} </li>
-        <li onClick={handleAddToImportant}>Mark as Important {isImportant && <FaCheck />} </li>
+        <li onClick={handleAddToMyDay} className={`${isMyDay ? 'selected' : ''}`}>Add to My Day {isMyDay && <FaCheck />} </li>
+        <li onClick={handleAddToImportant} className={`${isImportant ? 'selected' : ''}`}>Mark as Important {isImportant && <FaCheck />} </li>
       </ul>
     </div>
   );

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { TaskModel } from "../../types/Task";
-import { getMyDayTasks, getTasksFirebase } from "../../redux/task/tasksSlice";
-import { useAppSelector } from "../../redux/hooks";
+import { getTasksFirebase } from "../../redux/task/tasksSlice";
 import Task from "../../components/Task/Task";
 import { sortTasksByDate } from "../../utils";
 import './MyDay.css'
@@ -11,7 +10,6 @@ export default function MyDay() {
   const [myDayTasks, setMyDayTasks] = useState<TaskModel[]>()
   const [currentChose, setCurrentChose] = useState<number>()
   const [renderMyDayListTasks, setRenderMyDayListTasks] = useState<JSX.Element[]>()
-  const tasks = useAppSelector(state => state.tasks.tasks)
   useEffect(() => {
     (async () => {
       if (isLoggedIn) {
@@ -25,7 +23,7 @@ export default function MyDay() {
         // setMyDayTasks(getMyDayTasks(tasks))
       }
     })()
-  }, [tasks])
+  }, [])
   const TaskRender = (task: TaskModel) => (
     <Task
       _id={task._id || ''}

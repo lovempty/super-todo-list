@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { TaskModel } from "../../types/Task";
-import { getimportantTasks, getTasksFirebase } from "../../redux/task/tasksSlice";
+import { getTasksFirebase } from "../../redux/task/tasksSlice";
 import { useAppSelector } from "../../redux/hooks";
 import Task from "../../components/Task/Task";
 import { sortTasksByDate } from "../../utils";
@@ -17,8 +17,6 @@ export default function Important() {
       if (isLoggedIn) {
         try {
           const response = await getTasksFirebase('isImportant')
-          console.log({ response });
-
           setImportantTasks(response)
         } catch (error) {
 

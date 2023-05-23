@@ -10,10 +10,8 @@ import { useLocation } from 'react-router-dom';
 
 export default function AppLayout() {
   const location = useLocation();
-  const pathsNoSidebar = ['/login', 'sign-up']
-
-  const isAllowToDisplay = !pathsNoSidebar.includes(location.pathname)
-
+  const pathsNoSidebar = ['/login', 'sign-up', 'task-detail']
+  const allowToDisplay = pathsNoSidebar.filter(path => location.pathname.includes(path))
   const [backgroundImg, setBackgroundImg] = useState<string>('')
   const setBackground = (img: string) => {
     setBackgroundImg(img)
@@ -21,11 +19,11 @@ export default function AppLayout() {
   return (
     <div className="app-layout" style={{ backgroundImage: `url(../public/assets/no-sun.jpg)` }}>
       <Header setBackground={setBackground} />
-      <div className={isAllowToDisplay ? 'sidebar-layout' : ''}>
-        {isAllowToDisplay && <SideBar />}
+      <div className={!allowToDisplay.length ? 'sidebar-layout' : ''}>
+        {!allowToDisplay.length && <SideBar />}
         <Outlet />
       </div>
-      {isAllowToDisplay && <div className="footer">
+      {!allowToDisplay.length && <div className="footer">
         <InputTask taskName="" autofocus={false} />
       </div>}
       <ToastContainer position="top-center" theme="dark" />

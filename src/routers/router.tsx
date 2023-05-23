@@ -8,6 +8,7 @@ import { createBrowserRouter, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import MyDay from '../pages/MyDay/MyDay';
 import Important from '../pages/Important/Important';
+import SearchTask from '../pages/SearchTask/SearchTask';
 
 
 // Custom Route component
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "/my-day",
         element: <MyDay />,
+      },
+      {
+        path: "/search",
+        element: <SearchTask />,
       },
       {
         path: "/important",

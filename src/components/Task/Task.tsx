@@ -54,8 +54,6 @@ export default function Task({ taskContent, completed, _id, id, currentChose, is
     setIsChecked(newStatus)
   }
   const handleDeleteTask = () => {
-    console.log('log');
-
     onClickDelete(id, _id)
   }
   const handleEditTask = () => {
@@ -99,7 +97,7 @@ export default function Task({ taskContent, completed, _id, id, currentChose, is
       <div className='task-container'>
         <div className="overlay" onClick={handleCloseContextMenu} />
         <div
-          className={`task ${isChecked ? 'completed' : ''} ${isSelected ? 'isSelected' : ''}`}
+          className={`task ${isChecked ? 'completed' : ''} ${isSelected ? 'isSelected' : ''} `}
           onMouseOver={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           onDoubleClick={handleEditTask}

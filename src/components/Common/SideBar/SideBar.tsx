@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 export default function SideBar() {
   const location = useLocation();
   const [selectedMenu, setSelectedMenu] = useState('');
+  const [searchKey, setSearchKey] = useState<string>('')
   const navigate = useNavigate()
   const handleClickMenu = (toPath: string) => () => navigate(toPath)
   const menuItems = [
@@ -20,17 +21,28 @@ export default function SideBar() {
       setSelectedMenu('myDay')
     } else if (location.pathname === '/important') {
       setSelectedMenu('important')
+    } else {
+      setSelectedMenu('')
     }
   }
   useEffect(() => {
     updateSelectedMenu()
   }, [location.pathname]);
 
+  let timeoutId: NodeJS.Timeout;
 
+  const onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSearchKey(value)
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      navigate({ pathname: 'search', search: `keyword=${value}` })
+    }, 500);
+  }
   return (
     <div className='SideBar'>
       <div className="search">
-        <input type="text" placeholder='Search tasks' />
+        <input type="text" value={searchKey} placeholder='Search tasks' onChange={onChangeSearch} />
         <FaSearch className="input-icon" />
       </div>
       <div className='menu mt'>
