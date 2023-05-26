@@ -3,6 +3,7 @@ import './InputTask.css'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addTask, addTaskAsync, updateTaskAsync } from '../../redux/task/tasksSlice';
 import { TaskModel } from '../../types/Task';
+import { useLocation } from 'react-router-dom';
 type InputTaskProps = {
   taskName: string;
   autofocus: boolean;
@@ -25,6 +26,7 @@ export default function InputTask({ taskName, autofocus, handleBlur, isEdit, _id
   const tasks = useAppSelector(state => state.tasks.tasks)
   const dispatch = useAppDispatch()
   const [task, setTask] = useState<string>(taskName)
+  const location = useLocation()
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTask(event.target.value)
   }
@@ -40,7 +42,9 @@ export default function InputTask({ taskName, autofocus, handleBlur, isEdit, _id
           year: "numeric",
         }),
         user_id: localStorage.getItem('uid'),
-        dueDate: ''
+        dueDate: '',
+        isMyDay: location.pathname === '/my-day' ? true : false,
+        isImportant: location.pathname === '/important' ? true : false,
       };
       if (isLoggedIn) {
         dispatch(addTaskAsync(newTask))

@@ -19,6 +19,7 @@ export default function ContextMenu({ x, y, id, addToMyDay, addToImportant, isMy
   const handleAddToImportant = () => {
     addToImportant(!isImportant)
   }
+
   return (
     <div className="context-menu" style={{ left: x, top: y }}>
       <ul>

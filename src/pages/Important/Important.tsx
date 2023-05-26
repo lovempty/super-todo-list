@@ -3,7 +3,7 @@ import { TaskModel } from "../../types/Task";
 import { getTasksFirebase } from "../../redux/task/tasksSlice";
 import { useAppSelector } from "../../redux/hooks";
 import Task from "../../components/Task/Task";
-import { sortTasksByDate } from "../../utils";
+import { sortAllTasksByDate, sortTasksByDate } from "../../utils";
 import './Important.css'
 
 export default function Important() {
@@ -41,7 +41,7 @@ export default function Important() {
   )
   useEffect(() => {
     if (importantTasks) {
-      const { objectTaskByDate, sortedTasksByDate } = sortTasksByDate(importantTasks)
+      const { objectTaskByDate, sortedTasksByDate } = sortAllTasksByDate(importantTasks)
       setRenderMyDayListTasks(Object.keys(sortedTasksByDate).map((key, index) => {
         return (
           <div key={index}>
@@ -53,7 +53,7 @@ export default function Important() {
         );
       }))
     }
-  }, [importantTasks])
+  }, [importantTasks, currentChose])
 
   return (
     <div className="my-day">

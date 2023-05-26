@@ -8,6 +8,7 @@
   min-width: 250px;
   height: 600px;
   z-index: 999;
+  position: relative;
 }
 
 .search {
@@ -70,4 +71,12 @@
   background-color: rgb(228, 227, 227);
   border-radius: 5px;
   transform: scale(1.03);
+}
+
+.progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: calc(100% - 30px);
+  padding: 15px;
 }

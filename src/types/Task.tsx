@@ -1,4 +1,5 @@
 export type TaskModel = {
+  index?: number;
   _id?: string,
   id: number;
   content: string;

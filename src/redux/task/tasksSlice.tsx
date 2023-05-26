@@ -1,8 +1,8 @@
-import { AnyAction, PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { AnyAction, PayloadAction, createSlice, current } from '@reduxjs/toolkit'
 import { TaskModel } from '../../types/Task'
 import { RootState } from '../store';
 import { ThunkAction } from 'redux-thunk'
-import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where, orderBy, limit, writeBatch } from "firebase/firestore";
 import db from "../../firebase"
 import notify from '../../components/Common/Notify';
 import { ref, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
@@ -97,7 +97,7 @@ export const getTasksFirebase = async (type: 'isMyDay' | 'isImportant') => {
   try {
     const q = query(collection(db, COLLECTION_NAME), where(type, "==", true), where("user_id", "==", userId))
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs && querySnapshot.docs.map(doc => doc.data() as TaskModel)
+    return querySnapshot.docs && querySnapshot.docs.map(doc => ({ ...doc.data(), _id: doc.id }) as TaskModel)
   } catch (error) {
     console.error(error)
   }
@@ -116,7 +116,6 @@ export const getTasksFirebaseByTitle = async (title: string) => {
 };
 
 export const getTaskFireBaseById = async (id: number) => {
-
   try {
     const q = query(collection(db, COLLECTION_NAME), where("id", "==", id))
     const querySnapshot = await getDocs(q);
@@ -136,6 +135,12 @@ export const fetchTasksAsync = (): AppThunk => async dispatch => {
       querySnapshot.forEach((doc) => {
         tasks.push({ ...doc.data(), _id: doc.id } as TaskModel)
       });
+      tasks.sort((a, b) => {
+        if (a.index !== undefined && b.index !== undefined) {
+          return a.index - b.index
+        }
+        return 0
+      })
       dispatch(fetchTask(tasks))
     } catch (error) {
       console.error(error)
@@ -145,12 +150,36 @@ export const fetchTasksAsync = (): AppThunk => async dispatch => {
 
 export const addTaskAsync = (task: TaskModel): AppThunk => async dispatch => {
   try {
-    const docRef = await addDoc(collection(db, COLLECTION_NAME), task);
+    const tasksRef = collection(db, COLLECTION_NAME)
+    const q = query(tasksRef, orderBy("index", "desc"), limit(1));
+    const querySnapshot = await getDocs(q);
+    let newIndex = 0
+    if (!querySnapshot.empty) {
+      const latestTask = querySnapshot.docs[0].data()
+      newIndex = latestTask.index + 1;
+    }
+    const docRef = await addDoc(collection(db, COLLECTION_NAME), { index: newIndex, ...task } as TaskModel);
     dispatch(fetchTasksAsync())
     dispatch(addTask(task))
   } catch (e) {
     console.error("Error adding document: ", e);
   }
+}
+
+export const updateIndexTask = (newIndex: number, currentIndex: number): AppThunk => async (dispatch, getState) => {
+  let tasks = [...getState().tasks.tasks]
+
+  const currentTask = tasks.find(task => task.index === currentIndex)
+  tasks.splice(currentIndex, 1);
+  currentTask && tasks.splice(newIndex, 0, currentTask);
+  const newTasks = tasks.map((task, index) => ({ ...task, index }))
+  const batch = writeBatch(db);
+  newTasks.forEach(task => {
+    const taskRef = doc(db, COLLECTION_NAME, task._id || '')
+    batch.update(taskRef, { "index": task.index })
+  })
+  await batch.commit();
+  dispatch(fetchTasksAsync())
 }
 
 export const updateTaskAsync = (task: TaskModel, _id: string, fileAttach?: File): AppThunk => async dispatch => {

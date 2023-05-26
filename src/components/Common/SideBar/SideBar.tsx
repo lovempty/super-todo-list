@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './SideBar.css'
 import { FaSearch, FaSun, FaStar, FaListUl } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
+import ProgressBar from '../ProgressBar/ProgressBar';
 export default function SideBar() {
   const location = useLocation();
   const [selectedMenu, setSelectedMenu] = useState('');
@@ -52,6 +53,9 @@ export default function SideBar() {
           </div>
         ))}
         <hr />
+      </div>
+      <div className="progress-bar-container">
+        <ProgressBar />
       </div>
     </div>
   )

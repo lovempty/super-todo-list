@@ -8,7 +8,7 @@ type CompletedTaskProps = {
 }
 
 export default function CompletedTask({ content, total, label, type }: CompletedTaskProps) {
-  const [active, setActive] = useState(type === 'complete' ? true : false)
+  const [active, setActive] = useState(type === 'must-done' ? true : false)
   const handleClick = () => {
     setActive(!active)
   }

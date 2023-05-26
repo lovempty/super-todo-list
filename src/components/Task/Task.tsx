@@ -28,6 +28,7 @@ export default function Task({ taskContent, completed, _id, id, currentChose, is
   const dispatch = useAppDispatch()
 
   const onChangeStatus = (id: number, _id: string, status: boolean) => {
+
     if (!isLoggedIn) {
       dispatch(changeStatusTask({ id, status }))
     } else {
@@ -67,7 +68,6 @@ export default function Task({ taskContent, completed, _id, id, currentChose, is
     currentChose(id)
     event.preventDefault()
     setMenuPosition({ x: event.clientX, y: event.clientY });
-
   }
   const handleCloseContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.button !== 2) {
